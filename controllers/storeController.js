@@ -8,10 +8,10 @@ const multerOptions = {
     storage: multer.memoryStorage(),
     fileFilter(req, file, next) {
         const isPhoto = file.mimetype.startsWith('image/');
-        if(isPhoto) {
+        if (isPhoto) {
             next(null, true);
         } else {
-            next({ message: 'That filetype isn\'t allowed !' }, false);
+            next({message: 'That filetype isn\'t allowed !'}, false);
         }
     }
 };
@@ -57,7 +57,7 @@ exports.editStore = async (req, res) => {
 
 exports.updateStore = async (req, res) => {
     req.body.location.type = 'Point';
-    const store = await Store.findOneAndUpdate({ _id: req.params.id }, req.body, {
+    const store = await Store.findOneAndUpdate({_id: req.params.id}, req.body, {
         new: true,
         runValidators: true
     }).exec();
@@ -67,8 +67,17 @@ exports.updateStore = async (req, res) => {
 
 exports.getStoreBySlug = async (req, res, next) => {
     const store = await Store.findOne({slug: req.params.slug});
-    if(!store) {
+    if (!store) {
         return next();
     }
     res.render('store', {store, title: store.name});
+};
+
+exports.getStoresByTag = async (req, res) => {
+    const tag = req.params.tag;
+    const tagQuery = tag || {$exists: true};
+    const tagsPromise = Store.getTagsList();
+    const storesPromise = Store.find({tags: tagQuery});
+    const [tags, stores] = await Promise.all([tagsPromise, storesPromise]);
+    res.render('tag', {tags, title: 'Tags', tag, stores});
 };
