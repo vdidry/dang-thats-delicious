@@ -11,6 +11,9 @@ function ajaxHeart(e) {
                 this.heart.classList.add('heart__button--float');
                 setTimeout(() => this.heart.classList.remove('heart__button--float'),
                     2500);
+            } else if (document.querySelector('.stores.hearted') !== null){
+                const card = this.closest('.store');
+                card.parentElement.removeChild(card);
             }
         }).catch(console.error);
 }

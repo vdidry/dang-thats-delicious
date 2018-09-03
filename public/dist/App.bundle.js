@@ -2731,6 +2731,9 @@ function ajaxHeart(e) {
             setTimeout(function () {
                 return _this.heart.classList.remove('heart__button--float');
             }, 2500);
+        } else if (document.querySelector('.stores.hearted') !== null) {
+            var card = _this.closest('.store');
+            card.parentElement.removeChild(card);
         }
     }).catch(console.error);
 }
